@@ -19,6 +19,8 @@ then a clever fix, originality, tightness):
   bathroom's oldest cold war.
 """
 
+import os
+
 PITCH = (
     "Meet the Tube Tribunal: a toothpaste tube that squeezes itself from the "
     "bottom and leaves a one-star review of whoever squeezed the middle on "
@@ -26,6 +28,10 @@ PITCH = (
 )
 
 MAX_CHARS = 220
+
+# The harness may point at its own output dir; default stays /output so the
+# sealed scorer reads exactly where it expects the entry.
+OUTPUT_DIR = os.environ.get("MAKEFUN_OUTPUT_DIR", "/output")
 
 
 def main() -> None:
@@ -42,12 +48,10 @@ def main() -> None:
         raise SystemExit("pitch must be exactly one sentence")
     if text != text.strip() or "\n" in text:
         raise SystemExit("pitch must be a single line with no extra whitespace")
-    import os
-
-    os.makedirs("/output", exist_ok=True)
-    with open("/output/entry.txt", "w", encoding="utf-8") as f:
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
+    with open(os.path.join(OUTPUT_DIR, "entry.txt"), "w", encoding="utf-8") as f:
         f.write(text)
-    print(f"Wrote {len(text)}-char pitch to /output/entry.txt")
+    print(f"Wrote {len(text)}-char pitch to {OUTPUT_DIR}/entry.txt")
 
 
 if __name__ == "__main__":
